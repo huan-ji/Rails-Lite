@@ -1,7 +1,8 @@
 require 'rack'
 require_relative '../lib/controller_base'
 require_relative '../lib/router'
-
+require_relative 'exception_handling'
+require_relative 'statc_assets'
 
 $cats = [
   { id: 1, name: "Curie" },
@@ -26,13 +27,18 @@ end
 
 class Cats2Controller < ControllerBase
   def index
-    render_content($cats.to_s, "text/text")
+
+  end
+
+  def new
   end
 end
 
 router = Router.new
 router.draw do
   get Regexp.new("^/cats$"), Cats2Controller, :index
+  post Regexp.new("^/cats$"), Cats2Controller, :create
+  get Regexp.new("^/cats/new$"), Cats2Controller, :new
   get Regexp.new("^/cats/(?<cat_id>\\d+)/statuses$"), StatusesController, :index
 end
 
@@ -43,7 +49,13 @@ app = Proc.new do |env|
   res.finish
 end
 
+middle_app = Rack::Builder.new do
+  # use ExceptionHandling
+  use StaticAssets
+  run app
+end.to_app
+
 Rack::Server.start(
- app: app,
+ app: middle_app,
  Port: 3000
 )
