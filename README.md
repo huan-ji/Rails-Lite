@@ -24,7 +24,7 @@ For example a server running locally would be able to access the sameple cat ima
 
 ## Architecture and MVC
 
-Rails Lite includes a custom router, controller base, and Acitve Record Lite Base.
+Rails Lite includes a custom router, controller base, and SQLObject.
 
 ### Router
 
